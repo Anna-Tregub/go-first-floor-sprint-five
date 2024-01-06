@@ -28,6 +28,9 @@ func (t Training) distance() float64 {
 
 func (t Training) meanSpeed() float64 {
 	meanSpeed := t.distance() / t.Duration.Hours()
+	if t.Duration.Hours() == 0 {
+		return 0
+	}
 	return meanSpeed
 }
 
@@ -107,7 +110,9 @@ type Walking struct {
 
 func (w Walking) Calories() float64 {
 
-	Calories := ((CaloriesWeightMultiplier*w.Weight + (math.Pow((w.meanSpeed()*KmHInMsec), 2)/(w.Height/CmInM))*CaloriesSpeedHeightMultiplier*w.Weight) * w.Duration.Hours() * MinInHours)
+	speed := w.meanSpeed() * KmHInMsec
+	height := w.Height / CmInM
+	Calories := ((CaloriesWeightMultiplier*w.Weight + (math.Pow(speed, 2)/height)*CaloriesSpeedHeightMultiplier*w.Weight) * w.Duration.Hours() * MinInHours)
 	return Calories
 }
 
